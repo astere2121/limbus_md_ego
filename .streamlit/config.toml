@@ -1,4 +1,1 @@
 
-[runner]
-enforceSerializableSessionState = true
-fastReruns = false
