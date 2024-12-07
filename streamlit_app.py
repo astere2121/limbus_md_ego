@@ -16,84 +16,84 @@ keyword_options = {
     '화상': {
         "없음": {},
         "헬스치킨": {
-            3: ["닭다리살"]
+            3: [":blue[뜨거운 육즙 다리살]"]
         }
     },
     '출혈': {
         "없음": {},
         "신앙과 침식": {
-            2: ["못과 망치의 책 [4]"]
+            2: [":blue[못과 망치의 책 [4]]"]
         },
         "마주하지 않는": {
-            2: ["불결함 [4]"]
+            2: [":blue[불결함 [4]]"]
         },
         "헬스키친": {
-            2: ["오염된 실과 바늘"]
+            2: [":blue[오염된 실과 바늘]"]
         },
         "제 4회 발푸르기스의 밤 - 자색 정오의 시련": {
-            2: ["치사량"]
+            2: [":blue[치사량]"]
         },
         "속하지 못하는": {
-            3: ["갇힌 구더기"]
+            3: [":blue[갇힌 구더기]"]
         },
         "육참 골단": {
-            3: ["조각난 칼날 [5]"]
+            3: [":blue[조각난 칼날 [5]]"]
         }
     },
     '진동': {
         "없음": {},
         "우.미.다": {
-            1: ["기름때 찌든 스패너"]
+            1: [":blue[기름때 찌든 스패너]"]
         },
         "시간살인시간": {
-            2: ["녹슨 시계침 [5]", "에칭 시계침 [5]", "빛바랜 시계 케이스 [5]", "은빛 시계 케이스 [5]"]
-            ,3 : ["낙수의 잔"]
+            2: [":blue[녹슨 시계침 [5]]", ":blue[에칭 시계침 [5]]", ":blue[빛바랜 시계 케이스 [5]]", ":blue[은빛 시계 케이스 [5]]"]
+            ,3 : [":blue[낙수의 잔]"]
         }
     },
     '파열': {
         "없음": {},
         "속하지 못하는": {
-            2: ["흑단 브로치"]
+            2: [":blue[흑단 브로치]"]
         },
         "헬스치킨": {
-            3: ["목이 뻑뻑 가슴살"]
+            3: [":blue[목이 뻑뻑 가슴살]"]
         },
         "우.미.다" : {
-            3: ["크랲게 뇌수 담금주"]
+            3: [":blue[크랲게 뇌수 담금주]"]
         }
     },
     '침잠': {
         "없음": {},
         "사랑할 수 없는": {
-            2: ["얼어붙은 아우성 [4]"]
+            2: [":blue[얼어붙은 아우성 [4]]"]
         },
         "제 4회 발푸르기스의 밤 - 자색 정오의 시련":{
-            2: ["정신 오염 가속 가스", "흘러내린 엔케팔린"],
-            3: ["안식"]
+            2: [":blue[정신 오염 가속 가스]", ":blue[흘러내린 엔케팔린]"],
+            3: [":blue[안식]"]
         }
     },
     '호흡': {
         "없음": {},
         "20번구의 기적": {
-            1: ["털방울 모자"],
-            2: ["거대한 선물 보따리"]
+            1: [":blue[털방울 모자]"],
+            2: [":blue[거대한 선물 보따리]"]
         },
         "육참골단": {
-            3: ["부서진 칼날 [5]"],
-            4: ["해진 삿갓"]
+            3: [":blue[부서진 칼날 [5]]"],
+            4: [":blue[해진 삿갓]"]
         },
         "악으로 규정되는": {
-            2: ["작살 의족"]
+            2: [":blue[작살 의족]"]
         }
     },
     '충전': {
         "없음": {},
         "워프특급 살인사건": {
-            2: ["생체 발전형 배터리 [4]", "심장 리액트 모듈 [4]", "의체관절 서브모터 [4]"],
-            3: ["휴대용 역장 배터리", "E식 차원 단검"]
+            2: [":blue[생체 발전형 배터리 [4]]", ":blue[심장 리액트 모듈 [4]]", ":blue[의체관절 서브모터 [4]]"],
+            3: [":blue[휴대용 역장 배터리]", ":blue[E식 차원 단검]"]
         },
         "제 4회 발푸르기스의 밤 - 자색 정오의 시련": {
-            2: ["어긋난 트랜지스터"]
+            2: [":blue[어긋난 트랜지스터]"]
         }
     }
 }
@@ -191,13 +191,11 @@ ego_gift_recipes = {
 }
 
 
-st.title("림버스 컴퍼니")
-st.title("에고 기프트")
-st.write(
-    "오류 및 수정 문의는 해당 글에 댓글을 남겨주세요."
-)
+# 선택된 키워드 상태 초기화
+if 'last_selected_keyword' not in st.session_state:
+    st.session_state.last_selected_keyword = None
 
-st.divider()
+# 키워드 선택
 selected_keyword = st.radio(
     "키워드 선택",
     keywords.keys(),
@@ -205,28 +203,45 @@ selected_keyword = st.radio(
     horizontal=True,
 )
 
-if 'selection' not in st.session_state:
-    st.session_state.selection = {}
+# 키워드가 변경되면 선택 초기화
+if selected_keyword != st.session_state.last_selected_keyword:
+    st.session_state.last_selected_keyword = selected_keyword
+    st.session_state.selected_items = {}  # 선택 초기화
 
+# 선택된 키워드와 관련된 데이터 로드
 keyword = keywords[selected_keyword]
+tiers = ego_gift_lists[keyword]
 
+# 팩 선택
 packs = st.multiselect("특수 팩 선택", keyword_options[keyword], placeholder="선택 중인 팩이 없습니다.")
 pack_list = {1: [], 2: [], 3: [], 4: []}
-
 for pack in packs:
     for (key, value) in keyword_options[keyword][pack].items():
-        pack_list[key].extend([f':blue[{v}]' for v in value])
+        pack_list[key].extend(value)
 
-@st.fragment
-def ego_list_selection(tier):
-    result_list = ego_gift_lists[keyword][tier - 1] + pack_list[tier]
-    tier_key = f'{keyword}{tier}'
+# 티어별 에고 리스트 출력 (팩 포함)
+for tier_idx, gifts in enumerate(tiers, start=1):
+    st.subheader(f"{keyword} {tier_idx} 티어")
+    combined_gifts = gifts + pack_list[tier_idx]
 
-    selection = [gift for gift in st.session_state.selection[tier_key] if gift in result_list] if tier_key in st.session_state.selection else []
-    st.session_state.selection[tier_key] = st.pills(f"{keyword} {tier} 티어", result_list, selection_mode="multi", default=selection)
+    # 5개씩 그룹으로 나누기
+    rows = [combined_gifts[i:i + 5] for i in range(0, len(combined_gifts), 5)]
 
-for i in range(1, len(ego_gift_lists[keyword]) + 1):
-    ego_list_selection(i)
+    for row in rows:
+        cols = st.columns(len(row))  # 현재 줄의 항목 수만큼 열 생성
+        for col, gift in zip(cols, row):
+            # 체크박스 상태 관리
+            if gift not in st.session_state.selected_items:
+                st.session_state.selected_items[gift] = False
+
+            with col:
+                st.checkbox(
+                    label=gift,
+                    value=st.session_state.selected_items[gift],
+                    on_change=lambda g=gift: st.session_state.selected_items.update({g: not st.session_state.selected_items[g]}),
+                    key=f"{gift}_{tier_idx}"
+                )
+
 
 st.subheader("합성식")
 
