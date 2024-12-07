@@ -154,7 +154,6 @@ ego_gift_recipes = {
         "녹슨 입마개 + 치성 + 연기와 철조망 = 피안개",
         ":green[늘어붙은 쇠말뚝 + 녹슨 커터 나이프 + 찢어진 피주머니 = 출혈성 쇼크]",
         ":blue[못과 망치의 책 + 불결함 = 완전함]"
-        ":blue[조각난 칼날 + 녹슨 칼자루(참격) = 장관]"
     ],
     '진동': [
         "닉시 다이버전스 + 감합된 톱니바퀴 + 진실의 종 = 연성진동",
@@ -180,13 +179,12 @@ ego_gift_recipes = {
         "장식된 편자 + 추억 + 네잎클로버 = 복주머니",
         ":green[데블스 셰어 + 엔젤스 컷 + 엔도르핀 키트 = 캐스트 스피리츠]",
         ":blue[네뷸라이저 + 작살 의족 = 앞을 비추는 가스등]"
-        ":blue[부서진 칼날 + 녹슨 칼자루(참격) = 부동]"
     ],
     '충전': [
         "손목 보호대 + 물리 간섭 보호장 + 1B 타입 팔각 볼트 = 제 1종 영구기관",
         ":green[무정전 전원장치 + 미니어처 전봇대 = 인슐레이터]",
-        ":green[이력서 + 피뢰침 + 인슐레이터 = 제 5종 영구기관]",
-        ":blue[생체 발전형 배터리/심장 리액트 모듈 + 결정화된 혈액/의체관절 서브모터 = 과충전된 배터리/자율 작동식 관절/하츠 파워드 쥬얼/영구동력 서브모터]"
+        ":green[]",
+        ":blue[]"
     ],
 }
 
@@ -204,24 +202,25 @@ selected_keyword = st.radio(
     horizontal=True,
 )
 
-temp = []
+if 'selection' not in st.session_state:
+    st.session_state.selection = {}
 
 keyword = keywords[selected_keyword]
 
-pack = st.selectbox("특수 팩 선택", keyword_options[keyword])
-pack_list = keyword_options[keyword][pack]
+packs = st.multiselect("특수 팩 선택", keyword_options[keyword], placeholder="선택 중인 팩이 없습니다.")
+pack_list = {1: [], 2: [], 3: [], 4: []}
+
+for pack in packs:
+    for (key, value) in keyword_options[keyword][pack].items():
+        pack_list[key].append(*value)
 
 @st.fragment
 def ego_list_selection(tier):
-    result_list = ego_gift_lists[keyword][tier - 1] + []
-    tier_key = f'sel{tier}'
+    result_list = ego_gift_lists[keyword][tier - 1] + pack_list[tier]
+    tier_key = f'{keyword}{tier}'
 
-    if tier in pack_list:
-        result_list += pack_list[tier]
-
-    selection = [gift for gift in st.session_state[tier_key] if gift in result_list] if tier_key in st.session_state else []
-
-    st.session_state[tier_key] = st.segmented_control(f"{keyword} {tier} 티어", result_list, selection_mode="multi", default=selection)
+    selection = [gift for gift in st.session_state.selection[tier_key] if gift in result_list] if tier_key in st.session_state.selection else []
+    st.session_state.selection[tier_key] = st.segmented_control(f"{keyword} {tier} 티어", result_list, selection_mode="multi", default=selection)
 
 for i in range(1, len(ego_gift_lists[keyword]) + 1):
     ego_list_selection(i)
