@@ -221,7 +221,7 @@ for pack in packs:
 
 # 티어별 에고 리스트 출력 (팩 포함)
 for tier_idx, gifts in enumerate(tiers, start=1):
-    st.subheader(f"{keyword} {tier_idx} 티어")
+    st.text(f"{keyword} {tier_idx} 티어")
     combined_gifts = gifts + pack_list[tier_idx]
 
     # 5개씩 그룹으로 나누기, 부족한 항목은 빈 문자열로 채우기
