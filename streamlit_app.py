@@ -221,26 +221,29 @@ for pack in packs:
 
 # 티어별 에고 리스트 출력 (팩 포함)
 for tier_idx, gifts in enumerate(tiers, start=1):
-    st.text(f"{keyword} {tier_idx} 티어")
+    st.subheader(f"{keyword} {tier_idx} 티어")
     combined_gifts = gifts + pack_list[tier_idx]
 
-    # 5개씩 그룹으로 나누기
+    # 5개씩 그룹으로 나누기, 부족한 항목은 빈 문자열로 채우기
     rows = [combined_gifts[i:i + 5] for i in range(0, len(combined_gifts), 5)]
+    rows[-1] += [""] * (5 - len(rows[-1])) if rows and len(rows[-1]) < 5 else []  # 마지막 행 빈칸 추가
 
     for row in rows:
-        cols = st.columns(len(row))  # 현재 줄의 항목 수만큼 열 생성
+        cols = st.columns(5)  # 항상 5개의 열 생성
         for col, gift in zip(cols, row):
-            # 체크박스 상태 관리
-            if gift not in st.session_state.selected_items:
-                st.session_state.selected_items[gift] = False
-
             with col:
-                st.checkbox(
-                    label=gift,
-                    value=st.session_state.selected_items[gift],
-                    on_change=lambda g=gift: st.session_state.selected_items.update({g: not st.session_state.selected_items[g]}),
-                    key=f"{gift}_{tier_idx}"
-                )
+                if gift:  # 항목이 있으면 체크박스 표시
+                    if gift not in st.session_state.selected_items:
+                        st.session_state.selected_items[gift] = False
+
+                    st.checkbox(
+                        label=gift,
+                        value=st.session_state.selected_items[gift],
+                        on_change=lambda g=gift: st.session_state.selected_items.update({g: not st.session_state.selected_items[g]}),
+                        key=f"{gift}_{tier_idx}"
+                    )
+                else:
+                    st.empty()  # 빈칸 유지
 
 
 st.subheader("합성식")
