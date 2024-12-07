@@ -191,6 +191,12 @@ ego_gift_recipes = {
 }
 
 
+def form_callback():
+    st.write(st.session_state.pills1)
+    st.write(st.session_state.pills2)
+    st.write(st.session_state.pills3)
+    st.write(st.session_state.pills4)
+
 st.title("림버스 컴퍼니")
 st.title("에고 기프트")
 st.write(
@@ -223,7 +229,7 @@ def ego_list_selection(tier):
     tier_key = f'{keyword}{tier}'
 
     selection = [gift for gift in st.session_state.selection[tier_key] if gift in result_list] if tier_key in st.session_state.selection else []
-    st.session_state.selection[tier_key] = st.pills(f"{keyword} {tier} 티어", result_list, selection_mode="multi", default=selection, key=f"pills {i},on_change=st.rerun()")
+    st.session_state.selection[tier_key] = st.pills(f"{keyword} {tier} 티어", result_list, selection_mode="multi", default=selection, key=f"pills{i}, on_change=form_callback()")
 
 for i in range(1, len(ego_gift_lists[keyword]) + 1):
     ego_list_selection(i)
