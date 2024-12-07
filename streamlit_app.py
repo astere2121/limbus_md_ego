@@ -213,7 +213,7 @@ keyword = keywords[selected_keyword]
 tiers = ego_gift_lists[keyword]
 
 # 팩 선택
-packs = st.multiselect("특수 팩 선택", keyword_options[keyword], placeholder="선택 중인 팩이 없습니다.")
+packs = st.multiselect("특수 팩 선택", keyword_options[keyword], placeholder="특수한 팩을 갔을 경우 선택해주세요.")
 pack_list = {1: [], 2: [], 3: [], 4: []}
 for pack in packs:
     for (key, value) in keyword_options[keyword][pack].items():
@@ -221,7 +221,7 @@ for pack in packs:
 
 # 티어별 에고 리스트 출력 (팩 포함)
 for tier_idx, gifts in enumerate(tiers, start=1):
-    st.subheader(f"{keyword} {tier_idx} 티어")
+    st.text(f"{keyword} {tier_idx} 티어")
     combined_gifts = gifts + pack_list[tier_idx]
 
     # 5개씩 그룹으로 나누기
