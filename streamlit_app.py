@@ -195,6 +195,7 @@ st.write(
     "오류 및 수정 문의는 해당 글에 댓글을 남겨주세요."
 )
 
+st.divider()
 selected_keyword = st.radio(
     "키워드 선택",
     keywords.keys(),
@@ -212,7 +213,7 @@ pack_list = {1: [], 2: [], 3: [], 4: []}
 
 for pack in packs:
     for (key, value) in keyword_options[keyword][pack].items():
-        pack_list[key].append(*value)
+        pack_list[key].extend([f':blue[{v}]' for v in value])
 
 @st.fragment
 def ego_list_selection(tier):
@@ -225,5 +226,7 @@ def ego_list_selection(tier):
 for i in range(1, len(ego_gift_lists[keyword]) + 1):
     ego_list_selection(i)
 
+st.subheader("합성식")
+
 for recipe in ego_gift_recipes[keyword]:
-    st.text(recipe)
+    st.markdown(recipe)
