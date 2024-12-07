@@ -223,7 +223,7 @@ def ego_list_selection(tier):
     tier_key = f'{keyword}{tier}'
 
     selection = [gift for gift in st.session_state.selection[tier_key] if gift in result_list] if tier_key in st.session_state.selection else []
-    st.session_state.selection[tier_key] = st.pills(f"{keyword} {tier} 티어", result_list, selection_mode="multi", default=selection")
+    st.session_state.selection[tier_key] = st.pills(f"{keyword} {tier} 티어", result_list, selection_mode="multi", default=selection)
 
 for i in range(1, len(ego_gift_lists[keyword]) + 1):
     ego_list_selection(i)
